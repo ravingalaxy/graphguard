@@ -2,11 +2,13 @@
 
 [![Hackathon](https://img.shields.io/badge/WeMakeDevs-Graph%20Hacks%202026-6366f1.svg)](https://www.wemakedevs.org/hackathons/falkordb)
 [![Track](https://img.shields.io/badge/Track%2001-Agents%20That%20Act%20on%20Connected%20Data-22d3ee.svg)](https://www.wemakedevs.org/hackathons/falkordb#tracks)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-graphguard--pro9.onrender.com-success.svg?logo=render)](https://graphguard-pro9.onrender.com/)
 [![Database](https://img.shields.io/badge/Powered%20by-FalkorDB%20Graph%20Database-f59e0b.svg)](https://falkordb.com)
 [![Protocol](https://img.shields.io/badge/Protocol-MCP%20Model%20Context%20Protocol-10b981.svg)](https://modelcontextprotocol.io)
 [![Tests](https://img.shields.io/badge/Tests-11%2F11%20Passing%20(100%25)-brightgreen.svg)](test_all_endpoints.py)
 [![Docker](https://img.shields.io/badge/Docker-Optional%20(Auto--Fallback)-blue.svg)](#)
 
+> 🌐 **Live Web Application:** [https://graphguard-pro9.onrender.com/](https://graphguard-pro9.onrender.com/)  
 > **Submission for Graph Hacks: Context for AI Agents (Track 01: Agents That Act on Connected Data)**  
 > **Core Innovation:** Coordinates 4 collaborative AI agents traversing multi-hop FalkorDB topology to attribute threats, compute blast radiuses, expose tools via Model Context Protocol (MCP), and **autonomously execute real graph containment actions**.
 
