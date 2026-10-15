@@ -70,19 +70,21 @@
 
 ### Installation & Run
 
-1. **Clone & install dependencies:**
-   ```bash
-   cd "GraphGuard"
-   pip install -r requirements.txt
-   ```
+#### Option A: Local Python Run (Zero Docker Needed)
+```bash
+cd "GraphGuard"
+pip install -r requirements.txt
+python main.py
+```
+*Open [http://localhost:8000](http://localhost:8000) in your browser.*
 
-2. **Start the application:**
-   ```bash
-   python main.py
-   ```
+#### Option B: Full Docker Compose (App + FalkorDB Container)
+```bash
+docker-compose up --build
+```
 
-3. **Open the interactive dashboard:**
-   Navigate to [http://localhost:8000](http://localhost:8000) in your web browser.
+#### Option C: 1-Click Cloud Deployment
+Deploy free to Render or Hugging Face Spaces in under 2 minutes. See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).
 
 ---
 
