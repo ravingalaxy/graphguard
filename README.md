@@ -7,8 +7,7 @@
 [![Tests](https://img.shields.io/badge/Tests-11%2F11%20Passing%20(100%25)-brightgreen.svg)](test_all_endpoints.py)
 [![Docker](https://img.shields.io/badge/Docker-Optional%20(Auto--Fallback)-blue.svg)](#)
 
-> **Submission for Graph Hacks: Context for AI Agents (Track 01)**  
-> **Prize Target:** iPhone 18 Pro  
+> **Submission for Graph Hacks: Context for AI Agents (Track 01: Agents That Act on Connected Data)**  
 > **Core Innovation:** Coordinates 4 collaborative AI agents traversing multi-hop FalkorDB topology to attribute threats, compute blast radiuses, expose tools via Model Context Protocol (MCP), and **autonomously execute real graph containment actions**.
 
 ---
