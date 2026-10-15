@@ -4,7 +4,7 @@
  * Powered by FalkorDB Graph Database
  */
 
-const API_BASE = (window.location.protocol === 'file:' || !window.location.port) 
+const API_BASE = (window.location.protocol === 'file:') 
     ? 'http://localhost:8000/api' 
     : '/api';
 
