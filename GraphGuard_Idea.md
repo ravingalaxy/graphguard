@@ -1,11 +1,11 @@
-# GraphGuard - Multi-Agent Security Threat Investigation Platform
+﻿# GraphGuard - Multi-Agent Security Threat Investigation Platform
 
 **Track 01: Agents That Act on Connected Data**
-**Prize: iPhone 18 Pro**
+
 
 ---
 
-## 📋 Project Overview
+## ðŸ“‹ Project Overview
 
 ### The Problem
 
@@ -21,7 +21,7 @@ Security teams get overwhelmed by alerts. An analyst spends hours manually conne
 
 ### Value Proposition
 
-80% of security teams manually connect this data. Nobody has an automated solution. Fortune 500 security teams would pay $50k/year for this.
+80% of security teams manually connect this data. Nobody has an automated solution. Enterprise security operations centers (SOCs) require automated correlation across distributed graph topologies.
 
 ### Why FalkorDB Is Essential (Non-Negotiable)
 
@@ -41,50 +41,50 @@ With FalkorDB:
 
 ---
 
-## 🧠 Architecture Overview
+## ðŸ§  Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    FRONTEND (React/Vue)                     │
-│  - Graph visualization (D3.js)                              │
-│  - Chat UI / Investigation dashboard                        │
-│  - Evidence cards with traceable paths                      │
-└─────────────┬───────────────────────────────────────────────┘
-              │
-              │ API
-              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  BACKEND (Python FastAPI)                   │
-│  - Multi-Agent Orchestrator                               │
-│  - Handles agent handoffs, state management               │
-└─────────────┬───────────────────┬───────────────────────────┘
-              │                   │
-              │ graph_queries     │ agent_state
-              ▼                   ▼
-┌──────────────────┐   ┌─────────────────────────────┐
-│   FalkorDB       │   │   FalkorDB (Memory Graph)   │
-│   (Threat Graph) │   │   (Conversation/Memory)     │
-│                  │   │                             │
-│ - Nodes:         │   │ - Persistent summary         │
-│   * Incident     │   │ - Staged investigations      │
-│   * System       │   │ - Agent handoffs            │
-│   * User         │   │ - Temporal data             │
-│   * Threat       │   │ - Multi-tenant isolation    │
-│   * Indicator    │   │                             │
-│   * Evidence     │   │                             │
-│                  │   │                             │
-│ - Edges:         │   │                             │
-│   * INCIDENT_OF  │   │                             │
-│   * AFFECTS      │   │                             │
-│   * BELONGS_TO   │   │                             │
-│   * CAUSED_BY    │   │                             │
-│   * LINKS_TO     │   │                             │
-└──────────────────┘   └─────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                    FRONTEND (React/Vue)                     â”‚
+â”‚  - Graph visualization (D3.js)                              â”‚
+â”‚  - Chat UI / Investigation dashboard                        â”‚
+â”‚  - Evidence cards with traceable paths                      â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+              â”‚
+              â”‚ API
+              â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                  BACKEND (Python FastAPI)                   â”‚
+â”‚  - Multi-Agent Orchestrator                               â”‚
+â”‚  - Handles agent handoffs, state management               â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+              â”‚                   â”‚
+              â”‚ graph_queries     â”‚ agent_state
+              â–¼                   â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚   FalkorDB       â”‚   â”‚   FalkorDB (Memory Graph)   â”‚
+â”‚   (Threat Graph) â”‚   â”‚   (Conversation/Memory)     â”‚
+â”‚                  â”‚   â”‚                             â”‚
+â”‚ - Nodes:         â”‚   â”‚ - Persistent summary         â”‚
+â”‚   * Incident     â”‚   â”‚ - Staged investigations      â”‚
+â”‚   * System       â”‚   â”‚ - Agent handoffs            â”‚
+â”‚   * User         â”‚   â”‚ - Temporal data             â”‚
+â”‚   * Threat       â”‚   â”‚ - Multi-tenant isolation    â”‚
+â”‚   * Indicator    â”‚   â”‚                             â”‚
+â”‚   * Evidence     â”‚   â”‚                             â”‚
+â”‚                  â”‚   â”‚                             â”‚
+â”‚ - Edges:         â”‚   â”‚                             â”‚
+â”‚   * INCIDENT_OF  â”‚   â”‚                             â”‚
+â”‚   * AFFECTS      â”‚   â”‚                             â”‚
+â”‚   * BELONGS_TO   â”‚   â”‚                             â”‚
+â”‚   * CAUSED_BY    â”‚   â”‚                             â”‚
+â”‚   * LINKS_TO     â”‚   â”‚                             â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
 
-## 🤖 The Multi-Agent System
+## ðŸ¤– The Multi-Agent System
 
 GraphGuard uses 4 specialized agents that **share state** in the memory graph.
 
@@ -191,16 +191,16 @@ RETURN e
 **Execution time:** 10 seconds
 
 **Agent orchestration loop:**
-1. **Enricher** runs → `10-30s` → produces narrative of what happened
-2. **Threatographer** runs → `20-40s` → identifies threat actors, patterns
-3. **Memory Agent** saves state → `5s`
-4. **Orchestrator synthesizes** → `10s`
+1. **Enricher** runs â†’ `10-30s` â†’ produces narrative of what happened
+2. **Threatographer** runs â†’ `20-40s` â†’ identifies threat actors, patterns
+3. **Memory Agent** saves state â†’ `5s`
+4. **Orchestrator synthesizes** â†’ `10s`
 
 **Total investigating time:** ~60 seconds end-to-end.
 
 ---
 
-## 🗄️ FalkorDB Graph Schema (Production-Grade)
+## ðŸ—„ï¸ FalkorDB Graph Schema (Production-Grade)
 
 ### Nodes
 
@@ -314,7 +314,7 @@ RETURN e
 
 ---
 
-## 📝 Cypher Query Path (Explainability)
+## ðŸ“ Cypher Query Path (Explainability)
 
 Every conclusion is derived from a specific graph query:
 
@@ -339,7 +339,7 @@ ORDER BY exposure_count DESC
 
 ---
 
-## 🔬 Advanced FalkorDB Features to Use
+## ðŸ”¬ Advanced FalkorDB Features to Use
 
 ### 1. Multigraph Topology (Isolation Per Tenant)
 
@@ -388,7 +388,7 @@ RETURN componentId, size(memberId), collect(DISTINCT s.name)
 
 ---
 
-## 🎨 Demo Experience (What Judges See)
+## ðŸŽ¨ Demo Experience (What Judges See)
 
 ### Dashboard View
 
@@ -399,7 +399,7 @@ INC-2026-0447
 
 **Severity:**
 ```
-🔴 CRITICAL
+ðŸ”´ CRITICAL
 ```
 
 **Attack vector:**
@@ -421,9 +421,9 @@ SQL Injection in Payment Gateway
       [INDICATOR: 10.0.0.X]    [IP-209.149.XX.XX]
 
 Path highlighted:
-• SQLi → 3 components (2 hops)
-• APT29 (3 hops)
-• 4 similar previous incidents linked
+â€¢ SQLi â†’ 3 components (2 hops)
+â€¢ APT29 (3 hops)
+â€¢ 4 similar previous incidents linked
 ```
 
 ---
@@ -431,23 +431,23 @@ Path highlighted:
 ### Timeline Evidence Panel
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Agent Orchestrator (00:03:12) → Starting investigation...   │
-│                                                               │
-│  Agent Enricher (00:03:28) → COLLECTED 28 systems, 15 users  │
-│                            Query: MERGE p=(:INCIDENT)       │
-│                                                               │
-│  Agent Threatographer (00:04:12) → Identified APT29 as threat│
-│                            Confidence: 94%                   │
-│                            Algorithm: PageRank centrality   │
-│                                                               │
-│  Agent Threatographer (00:04:58) → Found 4 previous attacks  │
-│                            Query: MATCH i1-[:SIMILAR...    │
-│                                                               │
-│  Agent Orchestrator (00:05:18) → CONCLUSION: Validate if     │
-│                                   APT29 widely targeting     │
-│    Evidence points → 1 (verified), 3 (unverified)           │
-└─────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  Agent Orchestrator (00:03:12) â†’ Starting investigation...   â”‚
+â”‚                                                               â”‚
+â”‚  Agent Enricher (00:03:28) â†’ COLLECTED 28 systems, 15 users  â”‚
+â”‚                            Query: MERGE p=(:INCIDENT)       â”‚
+â”‚                                                               â”‚
+â”‚  Agent Threatographer (00:04:12) â†’ Identified APT29 as threatâ”‚
+â”‚                            Confidence: 94%                   â”‚
+â”‚                            Algorithm: PageRank centrality   â”‚
+â”‚                                                               â”‚
+â”‚  Agent Threatographer (00:04:58) â†’ Found 4 previous attacks  â”‚
+â”‚                            Query: MATCH i1-[:SIMILAR...    â”‚
+â”‚                                                               â”‚
+â”‚  Agent Orchestrator (00:05:18) â†’ CONCLUSION: Validate if     â”‚
+â”‚                                   APT29 widely targeting     â”‚
+â”‚    Evidence points â†’ 1 (verified), 3 (unverified)           â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
@@ -455,73 +455,73 @@ Path highlighted:
 ### Conclusion Card
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  🔴 CONFIDENCE: 87%                                         │
-│                                                               │
-│  CONCLUSION:                                                │
-│  The incident was caused by APT29 using SQLi. The attacker   │
-│  accessed 4 components, affecting 12 users, and has a         │
-│  history of targeting payment APIs (3 prior incidents).      │
-│                                                               │
-│  TRACEABLE EVIDENCE:                                       │
-│  • Threatactor attribution: 4 hops back → APT29 (94%)       │
-│  • Blast radius: impact on 89% of exposed systems           │
-│  • Similar past incidents: 2 instances, all critical        │
-│                                                               │
-│  Review Query: [Click to expand Cypher]                     │
-└─────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  ðŸ”´ CONFIDENCE: 87%                                         â”‚
+â”‚                                                               â”‚
+â”‚  CONCLUSION:                                                â”‚
+â”‚  The incident was caused by APT29 using SQLi. The attacker   â”‚
+â”‚  accessed 4 components, affecting 12 users, and has a         â”‚
+â”‚  history of targeting payment APIs (3 prior incidents).      â”‚
+â”‚                                                               â”‚
+â”‚  TRACEABLE EVIDENCE:                                       â”‚
+â”‚  â€¢ Threatactor attribution: 4 hops back â†’ APT29 (94%)       â”‚
+â”‚  â€¢ Blast radius: impact on 89% of exposed systems           â”‚
+â”‚  â€¢ Similar past incidents: 2 instances, all critical        â”‚
+â”‚                                                               â”‚
+â”‚  Review Query: [Click to expand Cypher]                     â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
 
-## 💻 Code Structure
+## ðŸ’» Code Structure
 
 ```
 src/
-│
-├── agents/
-│   ├── orchestrator/__init__.py
-│   ├── orchestrator/agent.py          -- Main decision agent
-│   ├── enricher/agent.py               -- Knowledge retrieval
-│   ├── threatographer/agent.py         -- Pattern recognition
-│   └── memory/agent.py                 -- Persistence layer
-│
-├── core/
-│   ├── falkor.py                       -- FalkorDB wrapper
-│   ├── graph_schema.py                 -- Schema definitions
-│   ├── graph_algorithms.py             -- Algorithm runners
-│   └── query_builder.py                -- Dynamic Cypher builder
-│
-├── models/
-│   ├── agent.py                        -- Agent state models
-│   ├── incident.py                     -- Incident representations
-│   └── evidence.py                     -- Evidence cards
-│
-├── services/
-│   ├── investigation.py                -- Investigation service
-│   ├── notification.py                 -- Alerts to teams
-│   └── dashboard.py                    -- API for frontend
-│
-├── frontend/
-│   ├── components/
-│   │   ├── graph-visualizer/           -- D3.js graph
-│   │   ├── evidence-card/              -- Traceable cards
-│   │   └── agent-timeline/             -- Agent execution timeline
-│   ├── pages/
-│   │   ├── dashboard.tsx
-│   │   ├── investigation/[id].tsx
-│   │   └── agents.tsx
-│   └── api/
-│       └── routes/
-│
-└── apps/
-    ├── api/                            -- FastAPI backend
-    └── web/                            -- React frontend
+â”‚
+â”œâ”€â”€ agents/
+â”‚   â”œâ”€â”€ orchestrator/__init__.py
+â”‚   â”œâ”€â”€ orchestrator/agent.py          -- Main decision agent
+â”‚   â”œâ”€â”€ enricher/agent.py               -- Knowledge retrieval
+â”‚   â”œâ”€â”€ threatographer/agent.py         -- Pattern recognition
+â”‚   â””â”€â”€ memory/agent.py                 -- Persistence layer
+â”‚
+â”œâ”€â”€ core/
+â”‚   â”œâ”€â”€ falkor.py                       -- FalkorDB wrapper
+â”‚   â”œâ”€â”€ graph_schema.py                 -- Schema definitions
+â”‚   â”œâ”€â”€ graph_algorithms.py             -- Algorithm runners
+â”‚   â””â”€â”€ query_builder.py                -- Dynamic Cypher builder
+â”‚
+â”œâ”€â”€ models/
+â”‚   â”œâ”€â”€ agent.py                        -- Agent state models
+â”‚   â”œâ”€â”€ incident.py                     -- Incident representations
+â”‚   â””â”€â”€ evidence.py                     -- Evidence cards
+â”‚
+â”œâ”€â”€ services/
+â”‚   â”œâ”€â”€ investigation.py                -- Investigation service
+â”‚   â”œâ”€â”€ notification.py                 -- Alerts to teams
+â”‚   â””â”€â”€ dashboard.py                    -- API for frontend
+â”‚
+â”œâ”€â”€ frontend/
+â”‚   â”œâ”€â”€ components/
+â”‚   â”‚   â”œâ”€â”€ graph-visualizer/           -- D3.js graph
+â”‚   â”‚   â”œâ”€â”€ evidence-card/              -- Traceable cards
+â”‚   â”‚   â””â”€â”€ agent-timeline/             -- Agent execution timeline
+â”‚   â”œâ”€â”€ pages/
+â”‚   â”‚   â”œâ”€â”€ dashboard.tsx
+â”‚   â”‚   â”œâ”€â”€ investigation/[id].tsx
+â”‚   â”‚   â””â”€â”€ agents.tsx
+â”‚   â””â”€â”€ api/
+â”‚       â””â”€â”€ routes/
+â”‚
+â””â”€â”€ apps/
+    â”œâ”€â”€ api/                            -- FastAPI backend
+    â””â”€â”€ web/                            -- React frontend
 ```
 
 ---
 
-## 🚀 Deployment Stack
+## ðŸš€ Deployment Stack
 
 - **Backend:** Python 3.11 + FastAPI
 - **Database:** FalkorDB Cloud (hosted) + FalkorDB Browser for visuals
@@ -533,12 +533,12 @@ src/
 
 ---
 
-## 🏆 Why This Will Win First Prize
+## ðŸ† Core Technical Differentiators
 
-| Winning Factor | How GraphGuard Delivers |
+| Architectural Dimension | How GraphGuard Delivers |
 |----------------|-------------------------|
 | **Graph is central** | Every agent's decision requires graph traversal. Query execution time under 100ms. |
-| **Multi-hop reasoning** | Agents connect 5-10 hop paths from incident → threat → infrastructure → past incidents. |
+| **Multi-hop reasoning** | Agents connect 5-10 hop paths from incident â†’ threat â†’ infrastructure â†’ past incidents. |
 | **Explainability** | Every conclusion shows the Cypher query and data path that generated it. |
 | **Real business problem** | 80% of security teams manually connect this data. Nobody else has an automated solution. |
 | **Design depth** | Multi-agent system, memory persistence, multitenancy, graph algorithms, high-throughput queries. |
@@ -550,23 +550,23 @@ src/
 
 ---
 
-## ⚡ Critical Rules to Follow
+## âš¡ Critical Rules to Follow
 
 **Verify before submitting:**
 
-- ✅ FalkorDB is the primary graph database — every query reaches FalkorDB first
-- ✅ The graph does real work — no "skin on top of SQL" fake projects
-- ✅ Explainability is strong — every conclusion clickable to Cypher query
-- ✅ Graph algorithms used — PageRank, connected components, centrality
-- ✅ Multi-hop reasoning demonstrated — not just single node lookups
-- ✅ Real business value — target LucidSecurity, Trellix, CrowdStrike, etc.
-- ✅ Explainers ready — you must understand every query, relationship, and algorithm
-- ✅ No private data — use synthetic or public datasets only
-- ✅ Technology stack disclosed — reveal if using AI coding assistants
+- âœ… FalkorDB is the primary graph database â€” every query reaches FalkorDB first
+- âœ… The graph does real work â€” no "skin on top of SQL" fake projects
+- âœ… Explainability is strong â€” every conclusion clickable to Cypher query
+- âœ… Graph algorithms used â€” PageRank, connected components, centrality
+- âœ… Multi-hop reasoning demonstrated â€” not just single node lookups
+- âœ… Real business value â€” target LucidSecurity, Trellix, CrowdStrike, etc.
+- âœ… Explainers ready â€” you must understand every query, relationship, and algorithm
+- âœ… No private data â€” use synthetic or public datasets only
+- âœ… Technology stack disclosed â€” reveal if using AI coding assistants
 
 ---
 
-## 📅 4-Day Implementation Timeline
+## ðŸ“… 4-Day Implementation Timeline
 
 ### Before Oct 15 (Preparation)
 - Join FalkorDB Discord: https://discord.com/invite/Y2mMT9VdMy
@@ -574,35 +574,35 @@ src/
 - Read GraphRAG docs
 - Sketch graph models on paper
 
-### Day 1 (Oct 15) — Foundation
+### Day 1 (Oct 15) â€” Foundation
 - Scaffold project structure
 - Set up FalkorDB with Docker
 - Create the 4 graph graphs (threat, memory, investigation)
 - Seed synthetic data (create 50 incidents, 100 users, 200 systems)
 - Build the Enricher Agent with the first 5 Cypher queries
 
-### Day 2 (Oct 16) — Core Functionality
+### Day 2 (Oct 16) â€” Core Functionality
 - Build Threatographer Agent with graph algorithms
 - Implement Memory Agent
 - Build Orchestrator Agent with state management
 - Get multi-agent coordination working end-to-end
 
-### Day 3 (Oct 17) — UI & Polish
+### Day 3 (Oct 17) â€” UI & Polish
 - Build React frontend with D3.js graph visualization
 - Create evidence cards with traceable paths
 - Polish the demo UX
 - Write README with graph schema and setup instructions
 - Record demo video (3 minutes max)
 
-### Day 4 (Oct 18) — Final Polish
+### Day 4 (Oct 18) â€” Final Polish
 - Deploy to Render.com or Railway.app
 - Run live demo, fix edge cases
-- Write blog post (AirPods bonus)
+- Write blog post (Technical blog post publication)
 - Submit via WeMakeDevs before 11:59 PM IST
 
 ---
 
-## 💡 Side Prize Strategy (AirPods 5)
+## ðŸ’¡ Technical Publication & Architecture Deep-Dive
 
 **Write a compelling blog post titled:** "How Multi-Agent Systems with Graph Databases are Revolutionizing Cybersecurity Investigations"
 
@@ -624,7 +624,7 @@ Top 10 blog posts will likely advance to final review.
 
 ---
 
-## 🎯 Pro Tips for Judges
+## ðŸŽ¯ Pro Tips for Judges
 
 **During demo:**
 
@@ -651,7 +651,7 @@ Top 10 blog posts will likely advance to final review.
 
 ---
 
-## 📚 Resources
+## ðŸ“š Resources
 
 ### FalkorDB Documentation
 - Getting Started: https://docs.falkordb.com/getting-started/
@@ -680,17 +680,17 @@ docker run -d -p 6379:6379 -p 3000:3000 falkordb/falkordb:latest
 
 ---
 
-## 🏁 Golden Rule
+## ðŸ Golden Rule
 
-**The graph must be the hero of your story.** Every feature, every agent, every agent decision — it's all powered by FalkorDB. If you build a project where FalkorDB is just an "extra option," you won't win.
+**The graph must be the hero of your story.** Every feature, every agent, every agent decision â€” it's all powered by FalkorDB. If you build a project where FalkorDB is just an "extra option," you won't win.
 
-Make the graph the **central nervous system** of your agent. That's what makes this first prize material. 🏆
+Make the graph the **central nervous system** of your agent. That is the foundational premise of GraphGuard. ðŸ†
 
 ---
 
 **Track:** Agents That Act on Connected Data
-**Prize:** iPhone 18 Pro
-**Confidence:** First Place ✨
+
+**Confidence:** First Place âœ¨
 
 ---
 
