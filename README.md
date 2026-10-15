@@ -170,4 +170,4 @@ curl -X POST http://localhost:8000/api/action/containment \
 ---
 
 ## 👥 Authors
-Built for **Graph Hacks: Context for AI Agents** by the GraphGuard Team.
+Built for **Graph Hacks: Context for AI Agents** by the GraphGuard Team (Ravindra).
