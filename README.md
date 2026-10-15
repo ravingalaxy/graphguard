@@ -72,7 +72,7 @@
 
 1. **Clone & install dependencies:**
    ```bash
-   cd "Track 1 GraphGuard"
+   cd "GraphGuard"
    pip install -r requirements.txt
    ```
 
