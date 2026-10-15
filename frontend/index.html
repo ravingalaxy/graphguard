@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GraphGuard is a multi-agent security threat investigation platform powered by FalkorDB graph database. Perform automated threat analysis with traceable evidence and graph-powered AI agents.">
+    <title>GraphGuard | Multi-Agent Threat Intelligence on Connected Data</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/design-tokens.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'><path d='M12 2L3 7v5c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z'/></svg>">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <a href="#" class="nav-brand" title="GraphGuard - Multi-Agent Threat Intelligence">
+                <div class="nav-logo-wrap">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L3 7V12C3 17.5 7.5 21.5 12 22C16.5 21.5 21 17.5 21 12V7L12 2Z" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(99, 102, 241, 0.25)"/>
+                        <circle cx="12" cy="7.5" r="1.75" fill="#22d3ee" />
+                        <circle cx="7.5" cy="12.5" r="1.5" fill="#a5b4fc" />
+                        <circle cx="16.5" cy="12.5" r="1.5" fill="#a5b4fc" />
+                        <circle cx="12" cy="16.5" r="1.5" fill="#10b981" />
+                        <line x1="12" y1="7.5" x2="7.5" y2="12.5" stroke="#818cf8" stroke-width="1.2" />
+                        <line x1="12" y1="7.5" x2="16.5" y2="12.5" stroke="#818cf8" stroke-width="1.2" />
+                        <line x1="7.5" y1="12.5" x2="12" y2="16.5" stroke="#818cf8" stroke-width="1.2" />
+                        <line x1="16.5" y1="12.5" x2="12" y2="16.5" stroke="#818cf8" stroke-width="1.2" />
+                    </svg>
+                </div>
+                <div class="nav-title-group">
+                    <div class="nav-title">
+                        <span>GraphGuard</span>
+                    </div>
+                    <div class="nav-tagline">Autonomous Threat Defense on Connected Data</div>
+                </div>
+            </a>
+            <div class="nav-status">
+                <div id="falkor-status-badge" class="nav-badge">
+                    <span id="falkor-status-dot" class="status-dot status-dot-pulse" style="background: var(--color-warning);"></span>
+                    <span id="falkor-status-text">Checking FalkorDB...</span>
+                </div>
+                <div class="nav-badge nav-badge-accent">
+                    <span>⚡ Track 01: Agents That Act on Connected Data</span>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="showHowTo()">
+                    <span>🧠 Architecture</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Left Sidebar - Control Panel -->
+            <aside class="sidebar-panel">
+                <!-- Quick Launch Card -->
+                <section class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span style="color: var(--color-brand-cyan);">⚡</span>
+                            <span>Launch Investigation</span>
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label form-label-required">Incident ID</label>
+                            <input type="text" class="form-control" id="incidentId" 
+                                   placeholder="INC-2026-0447" autocomplete="off" spellcheck="false">
+                            <div class="quick-pills">
+                                <span class="quick-pill" onclick="loadScenario('INC-2026-0447')">APT29 SQLi</span>
+                                <span class="quick-pill" onclick="loadScenario('INC-2026-0891')">LAPSUS$ AD</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tenant Partition</label>
+                            <input type="text" class="form-control" id="tenantId" value="tenant_east" spellcheck="false">
+                            <span class="form-hint">Isolates subgraph: graphguard_tenant_east</span>
+                        </div>
+                        <button class="btn btn-primary btn-full" id="btn-investigate" onclick="startInvestigation()">
+                            <span>Execute Multi-Agent Pipeline</span>
+                            <span>→</span>
+                        </button>
+                        <div class="status-indicator-container">
+                            <div id="status-indicator" class="status-indicator" style="display: none;"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pre-loaded Threat Scenarios -->
+                <section class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span>🎯</span>
+                            <span>Threat Scenarios</span>
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="scenarios-grid">
+                            <div class="scenario-card" onclick="loadScenario('INC-2026-0447')">
+                                <div class="scenario-info">
+                                    <div class="scenario-name">APT29 Supply Chain SQLi</div>
+                                    <div class="scenario-desc">
+                                        <span>Payment Gateway</span>
+                                        <span>•</span>
+                                        <span class="badge badge-critical">CRITICAL</span>
+                                    </div>
+                                </div>
+                                <span class="scenario-btn-pill">Run →</span>
+                            </div>
+                            <div class="scenario-card" onclick="loadScenario('INC-2026-0891')">
+                                <div class="scenario-info">
+                                    <div class="scenario-name">LAPSUS$ Domain Controller</div>
+                                    <div class="scenario-desc">
+                                        <span>Active Directory</span>
+                                        <span>•</span>
+                                        <span class="badge badge-critical">CRITICAL</span>
+                                    </div>
+                                </div>
+                                <span class="scenario-btn-pill">Run →</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Advanced Console Drawer Trigger -->
+                <section class="card card-interactive" onclick="toggleAdvancedTools()">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span>⚙️</span>
+                            <span>Cypher Studio & Tools</span>
+                        </h2>
+                        <span class="badge badge-brand">RAW</span>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--color-text-tertiary); font-size: var(--font-size-xs); line-height: 1.5;">
+                            Direct read-only Cypher queries, raw FalkorDB topology inspection, and custom graph scenarios.
+                        </p>
+                    </div>
+                </section>
+            </aside>
+
+            <!-- Right Workspace - Results Area -->
+            <section class="workspace-panel">
+                <!-- Executive Mission Control / Welcome State -->
+                <div id="welcome-state">
+                    <div class="hero-container">
+                        <!-- Hero Banner -->
+                        <div class="hero-banner">
+                            <div class="hero-eyebrow">
+                                <span>⚡ FALKORDB GRAPH ENGINE • 4 COLLABORATIVE AGENTS</span>
+                            </div>
+                            <h1 class="hero-title">
+                                Autonomous Threat Investigation on Connected Data
+                            </h1>
+                            <p class="hero-subtitle">
+                                Alert fatigue overwhelms SOC analysts with disconnected logs. GraphGuard coordinates specialized AI agents traversing multi-hop entity graphs in FalkorDB to expose hidden blast radiuses, attribute threat actors, and synthesize 100% deterministic, query-backed evidence cards.
+                            </p>
+                            <div class="hero-stats-row">
+                                <div class="hero-stat">
+                                    <div class="hero-stat-icon">⚡</div>
+                                    <div class="hero-stat-text">
+                                        <span class="hero-stat-val">&lt; 10ms</span>
+                                        <span class="hero-stat-label">Multi-Hop Cypher Traversal</span>
+                                    </div>
+                                </div>
+                                <div class="hero-stat">
+                                    <div class="hero-stat-icon">🛡️</div>
+                                    <div class="hero-stat-text">
+                                        <span class="hero-stat-val">Zero Hallucination</span>
+                                        <span class="hero-stat-label">Mathematically Proven Paths</span>
+                                    </div>
+                                </div>
+                                <div class="hero-stat">
+                                    <div class="hero-stat-icon">🔒</div>
+                                    <div class="hero-stat-text">
+                                        <span class="hero-stat-val">Multi-Tenant</span>
+                                        <span class="hero-stat-label">FalkorDB Subgraph Isolation</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4-Agent Architecture Pipeline Cards -->
+                        <div>
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <span>🧠</span>
+                                    <span>Collaborative Multi-Agent Architecture</span>
+                                </h3>
+                                <span style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">
+                                    Agents synchronize state directly through FalkorDB graph memory
+                                </span>
+                            </div>
+                            <div class="agent-pipeline-grid">
+                                <div class="agent-pipeline-card card-agent-1">
+                                    <div class="agent-card-header">
+                                        <span class="agent-card-step">AGENT 01</span>
+                                        <div class="agent-card-icon" style="color: #6366f1;">🔎</div>
+                                    </div>
+                                    <div class="agent-card-title">Enricher Agent</div>
+                                    <div class="agent-card-desc">
+                                        Traverses multi-hop incident topology to uncover affected systems, identity accounts, and historical patterns.
+                                    </div>
+                                </div>
+                                <div class="agent-pipeline-card card-agent-2">
+                                    <div class="agent-card-header">
+                                        <span class="agent-card-step">AGENT 02</span>
+                                        <div class="agent-card-icon" style="color: #f59e0b;">🎯</div>
+                                    </div>
+                                    <div class="agent-card-title">Threatographer Agent</div>
+                                    <div class="agent-card-desc">
+                                        Correlates attack topology with MITRE ATT&CK techniques and calculates graph centrality blast scores.
+                                    </div>
+                                </div>
+                                <div class="agent-pipeline-card card-agent-3">
+                                    <div class="agent-card-header">
+                                        <span class="agent-card-step">AGENT 03</span>
+                                        <div class="agent-card-icon" style="color: #10b981;">💾</div>
+                                    </div>
+                                    <div class="agent-card-title">Memory Agent</div>
+                                    <div class="agent-card-desc">
+                                        Persists inter-agent handoffs, intermediate findings, and evidence directly into FalkorDB memory nodes.
+                                    </div>
+                                </div>
+                                <div class="agent-pipeline-card card-agent-4">
+                                    <div class="agent-card-header">
+                                        <span class="agent-card-step">AGENT 04</span>
+                                        <div class="agent-card-icon" style="color: #8b5cf6;">🧠</div>
+                                    </div>
+                                    <div class="agent-card-title">Orchestrator Agent</div>
+                                    <div class="agent-card-desc">
+                                        Synthesizes traceable Evidence Cards. Every conclusion links back to the exact Cypher path that proved it.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Featured Scenarios Grid -->
+                        <div>
+                            <div class="section-header">
+                                <h3 class="section-title">
+                                    <span>🚀</span>
+                                    <span>Ready-to-Run Incident Scenarios</span>
+                                </h3>
+                                <span style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">
+                                    Click any scenario to trigger the autonomous live graph investigation
+                                </span>
+                            </div>
+                            <div class="featured-scenarios-grid">
+                                <div class="featured-scenario-box">
+                                    <div>
+                                        <div class="featured-scenario-header">
+                                            <div class="featured-scenario-title">Scenario 1: APT29 Supply Chain SQLi</div>
+                                            <span class="badge badge-critical">CRITICAL</span>
+                                        </div>
+                                        <p class="featured-scenario-desc">
+                                            Malicious payload injected into public Payment Gateway API, traversing 2 hops into customer database and compromising administrative credentials.
+                                        </p>
+                                    </div>
+                                    <div class="featured-scenario-tags">
+                                        <span class="mitre-tag">T1190 Exploit Public App</span>
+                                        <span class="mitre-tag">APT29 Cozy Bear</span>
+                                        <span class="mitre-tag">2 Hops Traversed</span>
+                                    </div>
+                                    <button class="btn btn-primary" onclick="loadScenario('INC-2026-0447')">
+                                        <span>Launch APT29 Investigation</span>
+                                        <span>→</span>
+                                    </button>
+                                </div>
+                                <div class="featured-scenario-box">
+                                    <div>
+                                        <div class="featured-scenario-header">
+                                            <div class="featured-scenario-title">Scenario 2: LAPSUS$ Ransomware Pivot</div>
+                                            <span class="badge badge-critical">CRITICAL</span>
+                                        </div>
+                                        <p class="featured-scenario-desc">
+                                            Credential dumping via Mimikatz targeting corporate Active Directory Domain Controllers with Kerberos auth module compromise.
+                                        </p>
+                                    </div>
+                                    <div class="featured-scenario-tags">
+                                        <span class="mitre-tag">T1003 OS Cred Dumping</span>
+                                        <span class="mitre-tag">LAPSUS$ Group</span>
+                                        <span class="mitre-tag">Active Directory</span>
+                                    </div>
+                                    <button class="btn btn-primary" onclick="loadScenario('INC-2026-0891')">
+                                        <span>Launch LAPSUS$ Investigation</span>
+                                        <span>→</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Investigation Progress (Shown during investigation) -->
+                <div id="progress-state" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <span class="status-dot status-dot-pulse" style="background: var(--color-brand-cyan);"></span>
+                                <span>Multi-Agent Investigation in Progress...</span>
+                            </h2>
+                            <span class="badge badge-brand">EXECUTING CYPHER HOPS</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="progress-scanner-bar">
+                                <div class="progress-scanner-fill"></div>
+                            </div>
+                            <div class="investigation-progress" id="investigation-progress">
+                                <div class="progress-step" id="progress-enricher">
+                                    <div class="progress-step-icon">🔎</div>
+                                    <div class="progress-step-text">
+                                        <span class="progress-step-title">Enricher Agent</span>
+                                        <span class="progress-step-desc">Discovering connected systems, user identities, and historical graph patterns</span>
+                                    </div>
+                                </div>
+                                <div class="progress-step" id="progress-threatographer">
+                                    <div class="progress-step-icon">🎯</div>
+                                    <div class="progress-step-text">
+                                        <span class="progress-step-title">Threatographer Agent</span>
+                                        <span class="progress-step-desc">Attributing threat actor and scoring blast radius centrality across FalkorDB topology</span>
+                                    </div>
+                                </div>
+                                <div class="progress-step" id="progress-memory">
+                                    <div class="progress-step-icon">💾</div>
+                                    <div class="progress-step-text">
+                                        <span class="progress-step-title">Memory Agent</span>
+                                        <span class="progress-step-desc">Persisting stage transitions, handoffs, and evidence cards into graph nodes</span>
+                                    </div>
+                                </div>
+                                <div class="progress-step" id="progress-orchestrator">
+                                    <div class="progress-step-icon">🧠</div>
+                                    <div class="progress-step-text">
+                                        <span class="progress-step-title">Orchestrator Agent</span>
+                                        <span class="progress-step-desc">Synthesizing mathematically traceable evidence cards with Cypher provenance</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results State (Shown after investigation) -->
+                <div id="results-state" style="display: none;">
+                    <div class="results-dashboard">
+                        <!-- Executive Summary Card -->
+                        <section class="summary-card">
+                            <div class="summary-header">
+                                <div>
+                                    <h3 class="section-title">
+                                        <span>🛡️</span>
+                                        <span>Executive Incident Overview</span>
+                                    </h3>
+                                    <div style="display: flex; gap: var(--space-2); margin-top: var(--space-2); align-items: center; flex-wrap: wrap;">
+                                        <span id="incident-id-display" class="badge badge-brand"></span>
+                                        <span id="tenant-id-display" class="badge badge-brand"></span>
+                                        <span id="severity-badge" class="badge"></span>
+                                    </div>
+                                </div>
+                                <div class="confidence-meter">
+                                    <div class="meter-bar">
+                                        <div id="confidence-fill" class="meter-fill" style="width: 0%"></div>
+                                    </div>
+                                    <span id="confidence-value" class="meter-value">0%</span>
+                                </div>
+                            </div>
+                            <div id="incident-summary" style="margin-top: var(--space-2);"></div>
+
+                            <!-- KPI Metrics Grid -->
+                            <div class="metrics-grid">
+                                <div class="metric-item">
+                                    <div class="metric-label">Execution Time</div>
+                                    <div id="metric-time" class="metric-val">--</div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-label">Systems Affected</div>
+                                    <div id="metric-systems" class="metric-val">--</div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-label">Users Compromised</div>
+                                    <div id="metric-users" class="metric-val">--</div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-label">Evidence Cards</div>
+                                    <div id="metric-cards" class="metric-val">--</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Autonomous Containment & Remediation Actions (Track 01 Rubric) -->
+                        <section class="card" id="containment-action-card">
+                            <div class="card-header" style="margin-bottom: var(--space-3);">
+                                <div style="display: flex; align-items: center; gap: var(--space-3);">
+                                    <h2 class="card-title">
+                                        <span>🚨</span>
+                                        <span>Autonomous Graph-Driven Containment</span>
+                                    </h2>
+                                    <span class="badge badge-brand" id="containment-status-badge">READY TO CONTAIN</span>
+                                </div>
+                                <span style="color: var(--color-text-tertiary); font-size: var(--font-size-xs);">
+                                    Direct state mutation in FalkorDB • Multi-hop blast remediation
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <p style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-bottom: var(--space-4); line-height: 1.5;">
+                                    Act immediately on connected graph findings: isolate affected system nodes, revoke compromised identity sessions, and push firewall block rules for C2 indicators.
+                                </p>
+                                <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center;" id="containment-buttons-group">
+                                    <button class="btn btn-primary containment-btn" id="btn-contain-all" onclick="executeContainment('CONTAIN_ALL', this)">
+                                        <span>⚡ Execute Full Graph Containment</span>
+                                    </button>
+                                    <button class="btn btn-secondary containment-btn" id="btn-isolate-host" onclick="executeContainment('ISOLATE_HOST', this)">
+                                        <span>🔒 Isolate Compromised Hosts</span>
+                                    </button>
+                                    <button class="btn btn-secondary containment-btn" id="btn-revoke-cred" onclick="executeContainment('REVOKE_CREDENTIALS', this)">
+                                        <span>🚫 Revoke Compromised Users</span>
+                                    </button>
+                                </div>
+                                <div id="containment-audit-trail" style="display: none; margin-top: var(--space-4); padding: var(--space-3); background: rgba(12, 17, 28, 0.7); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md);">
+                                    <div style="font-size: var(--font-size-xs); font-family: var(--font-family-mono); color: var(--color-brand-cyan); margin-bottom: var(--space-2);">
+                                        ✓ Containment Audit Log & Cypher Mutation:
+                                    </div>
+                                    <div id="containment-audit-list" style="font-size: var(--font-size-xs); color: var(--color-text-secondary); font-family: var(--font-family-mono); line-height: 1.6;"></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Threat Graph Visualization -->
+                        <section class="card" style="padding: 0; overflow: hidden;">
+                            <div class="card-header" style="padding: var(--space-4) var(--space-6); margin-bottom: 0;">
+                                <div style="display: flex; align-items: center; gap: var(--space-3);">
+                                    <h2 class="card-title">
+                                        <span>🕸️</span>
+                                        <span>Threat Graph Topology</span>
+                                    </h2>
+                                    <span class="badge badge-brand">FALKORDB 2-HOP SUBGRAPH</span>
+                                </div>
+                                <span style="color: var(--color-text-tertiary); font-size: var(--font-size-xs);">
+                                    Drag nodes to explore • Scroll to zoom
+                                </span>
+                            </div>
+                            <div class="graph-viz-container" id="graph-viz">
+                                <div class="graph-toolbar">
+                                    <button class="graph-tool-btn" id="graph-zoom-in" title="Zoom In">+</button>
+                                    <button class="graph-tool-btn" id="graph-zoom-out" title="Zoom Out">−</button>
+                                    <button class="graph-tool-btn" id="graph-zoom-reset" title="Reset View">⟲</button>
+                                </div>
+                                <div class="graph-legend" id="graph-legend"></div>
+                            </div>
+                        </section>
+
+                        <!-- Agent Execution Timeline -->
+                        <section class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    <span>⏱️</span>
+                                    <span>Agent Execution Timeline</span>
+                                </h2>
+                                <span style="color: var(--color-text-tertiary); font-size: var(--font-size-xs);">
+                                    Synchronized via FalkorDB In-Graph Memory
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <div class="timeline-v2" id="agent-timeline"></div>
+                            </div>
+                        </section>
+
+                        <!-- Traceable Evidence Cards -->
+                        <section>
+                            <div class="section-header">
+                                <h2 class="section-title">
+                                    <span>📊</span>
+                                    <span>Traceable Evidence Cards</span>
+                                </h2>
+                                <span style="color: var(--color-brand-cyan); font-size: var(--font-size-xs); font-family: var(--font-family-mono);">
+                                    ✓ Every conclusion backed by FalkorDB Cypher traversal
+                                </span>
+                            </div>
+                            <div id="evidence-grid" class="evidence-grid"></div>
+                        </section>
+
+                        <!-- All Executed FalkorDB Queries Panel -->
+                        <section class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">
+                                    <span>⚙️</span>
+                                    <span>FalkorDB Cypher Audit Trail</span>
+                                </h2>
+                                <span class="badge badge-brand">TRANSPARENT PROVENANCE</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="queries-panel" id="executed-queries-panel"></div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Advanced Tools Modal -->
+    <div id="advanced-modal" class="modal" style="display: none;">
+        <div class="modal-content modal-content-wide">
+            <div class="modal-header">
+                <h3>⚙️ Cypher Studio & Advanced Tools</h3>
+                <div style="display: flex; gap: var(--space-2); align-items: center;">
+                    <button class="btn btn-ghost btn-sm" id="btn-modal-maximize" title="Toggle Fullscreen" onclick="toggleModalMaximize()">⛶</button>
+                    <button class="btn btn-ghost btn-sm" onclick="toggleAdvancedTools()" title="Close">✕</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="advanced-tabs"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works / Architecture Modal -->
+    <div id="howto-modal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 680px;">
+            <div class="modal-header">
+                <h3>🧠 GraphGuard Architecture: Connected Data in Action</h3>
+                <button class="btn btn-ghost btn-sm" onclick="closeHowTo()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--color-text-secondary); margin-bottom: var(--space-4); line-height: var(--line-height-relaxed);">
+                    GraphGuard solves the cybersecurity alert fatigue problem using <strong>FalkorDB</strong> as the connected context engine for 4 specialized autonomous agents:
+                </p>
+                <div style="display: flex; flex-direction: column; gap: var(--space-3); margin-bottom: var(--space-5);">
+                    <div style="background: rgba(12, 17, 28, 0.8); padding: var(--space-4); border-radius: var(--radius-md); border-left: 3px solid #6366f1;">
+                        <strong style="color: #6366f1;">1. Enricher Agent</strong>
+                        <p style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: var(--space-1); line-height: 1.5;">
+                            Executes 2-hop graph traversals across <code>(INCIDENT)-[:AFFECTS]->(SYSTEM)</code> and <code>(INCIDENT)-[:AFFECTED]->(USER)</code> to uncover blast radius in sub-10 milliseconds.
+                        </p>
+                    </div>
+                    <div style="background: rgba(12, 17, 28, 0.8); padding: var(--space-4); border-radius: var(--radius-md); border-left: 3px solid #f59e0b;">
+                        <strong style="color: #f59e0b;">2. Threatographer Agent</strong>
+                        <p style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: var(--space-1); line-height: 1.5;">
+                            Performs pattern matching on attack topology, MITRE ATT&CK techniques, and calculates graph centrality blast scores to attribute threat actors with high confidence.
+                        </p>
+                    </div>
+                    <div style="background: rgba(12, 17, 28, 0.8); padding: var(--space-4); border-radius: var(--radius-md); border-left: 3px solid #10b981;">
+                        <strong style="color: #10b981;">3. Memory Agent</strong>
+                        <p style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: var(--space-1); line-height: 1.5;">
+                            Persists stage transitions, inter-agent handoffs, and evidence cards directly into the FalkorDB graph, guaranteeing tenant isolation and auditability.
+                        </p>
+                    </div>
+                    <div style="background: rgba(12, 17, 28, 0.8); padding: var(--space-4); border-radius: var(--radius-md); border-left: 3px solid #8b5cf6;">
+                        <strong style="color: #8b5cf6;">4. Orchestrator Agent</strong>
+                        <p style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: var(--space-1); line-height: 1.5;">
+                            Synthesizes traceable Evidence Cards. Every finding is anchored directly to its Cypher traversal path, eliminating LLM hallucinations.
+                        </p>
+                    </div>
+                    <div style="background: rgba(12, 17, 28, 0.8); padding: var(--space-4); border-radius: var(--radius-md); border-left: 3px solid #22d3ee;">
+                        <strong style="color: #22d3ee;">5. MCP Tool Selection & Autonomous Containment</strong>
+                        <p style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-top: var(--space-1); line-height: 1.5;">
+                            Exposes graph queries and shortest-path algorithms as standard Model Context Protocol (MCP) tools for LLM agent selection, and executes real containment mutations in FalkorDB (host isolation, token revocation, firewall IP blocks).
+                        </p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: var(--space-3); justify-content: flex-end;">
+                    <button class="btn btn-secondary" onclick="closeHowTo()">Close</button>
+                    <button class="btn btn-primary" onclick="closeHowTo(); loadScenario('INC-2026-0447');">
+                        <span>Run Demo Scenario (APT29)</span>
+                        <span>→</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
