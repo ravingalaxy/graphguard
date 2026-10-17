@@ -62,6 +62,90 @@
 
 ---
 
+## 📊 Graph Data Model & Schema
+
+GraphGuard models enterprise telemetry as an interconnected multi-relational graph inside FalkorDB:
+
+```mermaid
+graph TD
+    INC["INCIDENT<br/>(id, title, severity, status)"]
+    SYS["SYSTEM<br/>(hostname, ip, tier, status)"]
+    COMP["COMPONENT<br/>(name, runtime, version)"]
+    USR["USER<br/>(username, role, status)"]
+    THREAT["THREAT<br/>(actor, technique, cve)"]
+    IND["INDICATOR<br/>(ip, domain, hash, status)"]
+    EVID["EVIDENCE<br/>(confidence, cypher, query_time)"]
+    ACT["CONTAINMENT_ACTION<br/>(action_type, timestamp, status)"]
+
+    INC -->|AFFECTS| SYS
+    SYS -->|CONTAINS| COMP
+    SYS -->|AUTHORIZED_TO| USR
+    INC -->|LINKS_TO| THREAT
+    THREAT -->|USED_TOOL| IND
+    INC -->|HAS_EVIDENCE| EVID
+    INC -->|CONTAINED_BY| ACT
+```
+
+### Node Labels & Core Properties
+- **`INCIDENT`**: `incident_id`, `severity`, `status`, `first_seen`, `last_seen`, `title`, `description`
+- **`SYSTEM`**: `hostname`, `ip_address`, `criticality`, `os`, `status` (`ACTIVE`, `ISOLATED`)
+- **`COMPONENT`**: `name`, `runtime`, `version`, `port`
+- **`USER`**: `username`, `role`, `department`, `status` (`ACTIVE`, `REVOKED`)
+- **`THREAT`**: `actor`, `cve`, `technique`, `tactic` (MITRE ATT&CK taxonomy)
+- **`INDICATOR`**: `ioc_value`, `ioc_type`, `threat_level`, `status` (`ACTIVE`, `BLOCKED`)
+- **`CONTAINMENT_ACTION`**: `action_id`, `action_type`, `mutated_count`, `timestamp`
+
+---
+
+## 📜 Key FalkorDB Cypher Queries & Graph Algorithms
+
+GraphGuard's AI agents depend directly on native FalkorDB Cypher traversals and algorithms:
+
+### 1. Multi-Hop Incident Context Traversal (3-Hops)
+```cypher
+MATCH (i:INCIDENT {incr_id: $incident_id})-[:AFFECTS]->(s:SYSTEM)-[:CONTAINS]->(c:COMPONENT)
+OPTIONAL MATCH (i)-[:LINKS_TO]->(t:THREAT)-[:USED_TOOL]->(ind:INDICATOR)
+RETURN i, s, c, t, ind
+```
+
+### 2. Multi-Hop Blast Radius Calculation (k-Hop Neighborhood)
+```cypher
+MATCH path = (s:SYSTEM {hostname: $start_hostname})-[*1..3]-(connected)
+RETURN connected.hostname AS asset, length(path) AS distance, labels(connected) AS type
+```
+
+### 3. Shortest Attack Path (Breadth-First Traversal)
+```cypher
+MATCH path = shortestPath((source:INDICATOR {ioc_value: $c2_ip})-[*]-(target:SYSTEM {criticality: "TIER-0"}))
+RETURN [n in nodes(path) | coalesce(n.hostname, n.ioc_value, n.name)] AS attack_chain, length(path) AS hops
+```
+
+### 4. Graph Centrality Algorithm (Betweenness & Degree Centrality)
+```cypher
+MATCH (s:SYSTEM)-[r]-(other)
+RETURN s.hostname AS system, count(r) AS degree_centrality
+ORDER BY degree_centrality DESC
+LIMIT 5
+```
+
+### 5. Autonomous Graph State Mutation (Containment Action)
+```cypher
+MATCH (i:INCIDENT {incr_id: $incident_id})-[:AFFECTS]->(s:SYSTEM)
+SET s.status = 'ISOLATED', s.isolated_at = timestamp()
+WITH i
+MATCH (i)-[:LINKS_TO]->(t:THREAT)-[:USED_TOOL]->(ind:INDICATOR)
+SET ind.status = 'BLOCKED'
+CREATE (act:CONTAINMENT_ACTION {
+    action_id: $action_id,
+    action_type: 'CONTAIN_ALL',
+    executed_at: timestamp(),
+    status: 'COMPLETED'
+})
+CREATE (i)-[:CONTAINED_BY]->(act)
+```
+
+---
+
 ## 🚀 Quick Start (Zero Friction)
 
 ### Prerequisites
